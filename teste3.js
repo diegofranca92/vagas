@@ -1,15 +1,27 @@
-var data =  require("./fakeData");
+const data = require('./fakeData')
 
-module.exports = function(req, res) {
-  
-    var name =  req.query.name;
+const deleteUser = function (req, res) {
+  const { name, id } = req.query
 
-    for(let i = 0; i < data.length;  i++) {
-        if(i.name == name) {
-            data[i] = null;
-        }
-    }
+  const userToDelete = data.find(user => user.id === id)
+  let index = data.indexOf(userToDelete)
+  console.log(userToDelete, 'userToDelete')
 
-    res.send("success");
+  if (!userToDelete) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'User not found'
+    })
+  }
 
-};
+  data.splice(index, 1)
+  res.status(204).json({
+    status: 'success',
+    data: null,
+    message: `The user: ${name} was successfully deleted`
+  })
+}
+
+module.exports = {
+  deleteUser
+}
